@@ -41,7 +41,7 @@ T.pd()
 # It can be useful to find out where your turtle is (it's invisible so far!)
 T.Turtle.getTilePos() 
 #You can also set its position
-T.Turtle.setPos()
+T.Turtle.setPos(x,y,z)
 # What block type is set at the moment?
 T.Turtle.getBlockType()
 # Which direction is the turtle facing?
