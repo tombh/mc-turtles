@@ -1,47 +1,55 @@
 #Minecraft Turtles
 
-Been teaching a Code Club to primary school kids. This is an early attempt to recreate the classic turtles in Minecraft.
+We have been using the Minecraft Raspberry Pi edition in our Code Club and experimented with the API.
+
+This is an attempt to recreate LOGO turtle movements in Minecraft, by placing blocks along their paths. Still very basic.
+
+(Not to be mixed up with the Turtles of the Computercraft Mod: [http://computercraft.info/wiki/Turtle](http://computercraft.info/wiki/Turtle) )
 
 ##Examples
 
 **Hello World**
 ```python
-import minecraft
-chat("Hello World")
+from turtlecraft import Turtlecraft
+T = TurtleCraft()
+T.chat("Hello World")
 ```
 
 **Basic Commands**
 ```python
-# Move the turtle in the implied direction
-# Note that there is no rotation, it is crude 90 degree movement at the moment
-forward(distance)
-backward(distance)
-left(distance)
-right(distance)
-up(distance)
-down(distance)
+# Move the turtle forward
+T.fd(steps)
+# Rotate the turtle right or left
+T.rt(degrees)
+T.lt(degrees)
 
-# Set an area the size of <cubic_length>^3 to the AIR block
-clear(cubic_length)
+# Set an area the size of <square_length>^2 to the AIR block
+T.clear(square_length)
 
 # Set the current block type. Similar to traditional turtle's pencolor()
-# There are hundreds of block types
-setBlockType(block_int)
+# There are hundreds of block types, but for now just added a list of possible blocks:  ['GRASS','AIR','DIRT','STONE','TNT','GOLD_ORE','LAVA','MELON'] 
+# Default is Grass
+T.setBT(blocktype)
+
+# Pen up / pen down - While moving the turtle leaves a trail of blocks or not
+T.pu()
+T.pd()
 ```
 
-**The 'mc' global**    
-The `mc` instance is inherited from `mcpi` and has all the expected methods and properties
+**Accessing the turtle's properties**
 ```python
-# Player position
-mc.player.getPos()
-# Camera position
-mc.player.setPos(x, y, z)
-mc.camera.setPos(x, y, z)
-# Blocks
-mc.SetBlock(x, y, z, block_type)
+# It can be useful to find out where your turtle is (it's invisible so far!)
+T.Turtle.getTilePos() 
+#You can also set its position
+T.Turtle.setPos()
+# What block type is set at the moment?
+T.Turtle.getBlockType()
+# Which direction is the turtle facing?
+T.Turtle.getDir()
 ```
 
-**Some Block Types**
+
+**Some more Block Types**
 ```python
 AIR = 0
 STONE = 1

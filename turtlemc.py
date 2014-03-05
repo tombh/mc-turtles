@@ -1,5 +1,6 @@
 import sys
-sys.path.append("..")
+PATH_TO_MCPI = ".."
+sys.path.append(PATH_TO_MCPI)
 import mcpi.minecraft as minecraft
 import mcpi.block as block
 import math

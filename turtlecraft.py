@@ -1,5 +1,6 @@
 import sys
-sys.path.append("..")
+PATH_TO_MCPI = ".."
+sys.path.append(PATH_TO_MCPI)
 import mcpi.minecraft as minecraft
 import mcpi.block as block
 from turtlemc import Turtle
@@ -7,7 +8,6 @@ from turtlemc import Turtle
 class Turtlecraft:
     
     BLOCKTYPES = ['GRASS','AIR','DIRT','STONE','TNT','GOLD_ORE','LAVA','MELON']
-
 
     def __init__(self,x=0,y=1,z=0,dir=0,block = 'GRASS'):
         self.Turtle = Turtle(x,y,z,dir,block)
@@ -47,6 +47,9 @@ class Turtlecraft:
                 'DIRT': block.DIRT,
                 'GOLD_ORE': block.GOLD_ORE
                  }.get(blocktype, block.GRASS)   
-
-    def testTC(self):
-        self.mc.postToChat("Connection working")
+                 
+    def chat(self, message):
+        self.mc.postToChat(message)
+    
+    def clear(self, size):
+        self.mc.setBlocks(-size, 1, -size, size, 1, size, block.AIR.id)
