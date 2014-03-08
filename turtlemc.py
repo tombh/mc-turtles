@@ -60,13 +60,19 @@ class Turtle:
         startpos = self.getPos()        
         x,y,z = startpos
         dir = self.getDir()
-        # calculating the net forward movement on x-axis
-        if self._dir == 90:
+        # Taking care of special angles
+        if self._dir == 0:
+            xdiff = steps
+            zdiff = 0
+        elif self._dir == 90:
             xdiff = 0        
             zdiff = steps
         elif self._dir == 270:
             xdiff = 0
             zdiff = steps*(-1)
+        elif self._dir == 180:
+            xdiff = steps*(-1)
+            zdiff = 0
         else:
             xdiff = math.cos(math.radians(dir))*steps
             zdiff = math.sin(math.radians(dir))*steps
@@ -74,13 +80,21 @@ class Turtle:
         # We are only recording x and z coordinates, y stays the same
         if self._pendown:
             coords = []
-            if xdiff == steps:
+            if self._dir == 0:
                 for i in range(steps):
-                    coords.append((x+i,z))       
-            elif xdiff == 0:
+                    coords.append((x+i,z)) 
+            elif self._dir == 180:
+                for i in range(steps):
+                    coords.append((x-i,z))  
+            elif self._dir == 90:
                 for i in range(steps): 
                     coords.append((x,z+i))
+            elif self._dir == 270:
+                for i in range(steps):
+                    coords.append((x,z-i))
             else:
+                xdiff = math.cos(math.radians(dir))*steps
+                zdiff = math.sin(math.radians(dir))*steps
                 # calculate coordinates passed for each x-step forward
                 xsteps = math.ceil(xdiff)
                 zdiffunit = math.tan(math.radians(dir))
@@ -93,7 +107,6 @@ class Turtle:
         self._pos = [newx,y,newz]
         self._tilepos = [int(math.floor(newx)), y, int(math.floor(newz))]
         
-               
     
     
     
