@@ -11,7 +11,7 @@ This is an attempt to recreate LOGO turtle movements in Minecraft, by placing bl
 **Hello World**
 ```python
 from turtlecraft import Turtlecraft
-T = TurtleCraft()
+T = Turtlecraft()
 T.chat("Hello World")
 ```
 
