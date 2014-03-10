@@ -16,12 +16,14 @@ class Turtle:
         self._pendown = True
 
     def setTilePos(self,x,y,z):
-        self._tilepos = [int(math.floor(x)),int(math.floor(y)),int(math.floor(z))]
+        self._tilepos = [int(round(x)),int(round(y)),int(round(z))]
 
     def getTilePos(self):
         return self._tilepos
 
     def setPos(self,x,y,z):
+        x = self.correctNearZero(x)
+        z = self.correctNearZero(z)
         self._pos = [x,y,z]
 
     def getPos(self):
@@ -60,54 +62,50 @@ class Turtle:
         startpos = self.getPos()        
         x,y,z = startpos
         dir = self.getDir()
-        # Taking care of special angles
-        if self._dir == 0:
-            xdiff = steps
-            zdiff = 0
-        elif self._dir == 90:
-            xdiff = 0        
-            zdiff = steps
-        elif self._dir == 270:
-            xdiff = 0
-            zdiff = steps*(-1)
-        elif self._dir == 180:
-            xdiff = steps*(-1)
-            zdiff = 0
-        else:
-            xdiff = math.cos(math.radians(dir))*steps
-            zdiff = math.sin(math.radians(dir))*steps
-        # This is going to contain the tiles the turtle passes through
-        # We are only recording x and z coordinates, y stays the same
-        if self._pendown:
-            coords = []
-            if self._dir == 0:
-                for i in range(steps):
-                    coords.append((x+i,z)) 
-            elif self._dir == 180:
-                for i in range(steps):
-                    coords.append((x-i,z))  
-            elif self._dir == 90:
-                for i in range(steps): 
-                    coords.append((x,z+i))
-            elif self._dir == 270:
-                for i in range(steps):
-                    coords.append((x,z-i))
-            else:
-                xdiff = math.cos(math.radians(dir))*steps
-                zdiff = math.sin(math.radians(dir))*steps
-                # calculate coordinates passed for each x-step forward
-                xsteps = math.ceil(xdiff)
-                zdiffunit = math.tan(math.radians(dir))
-                for i in range(int(xsteps)):
-                    coords.append((x+i,math.ceil(i*zdiffunit)))
-            self._coords = coords
-              
-        newx = x + xdiff
-        newz = z + zdiff
-        self._pos = [newx,y,newz]
-        self._tilepos = [int(math.floor(newx)), y, int(math.floor(newz))]
-        
-    
-    
-    
 
+        angle_rad = math.radians(dir)
+        xdiff = self.correctNearZero(math.cos(angle_rad))*steps        
+        zdiff = self.correctNearZero(math.sin(angle_rad))*steps
+
+        if self._pendown:
+            coords = []        
+
+            xsteps = math.fabs(xdiff)
+            zsteps = math.fabs(zdiff)
+            if xsteps >= zsteps:
+                count = int(round(xsteps))
+                sign = self.getSign(xdiff)
+                zincr = self.getIncrement(zdiff, count)
+                for i in range(count):
+                    coords.append((int(x+i*sign),int(round(z+zincr*i))))
+            else:
+                count = int(round(zsteps))
+                sign = self.getSign(zdiff)
+                xincr = self.getIncrement(xdiff,count)
+                for i in range(count):
+                    coords.append((int(round(x+xincr*i)),int(z+i*sign)))
+            
+            self._coords = coords                
+
+        newx = self.correctNearZero(x + xdiff)
+        newz = self.correctNearZero(z + zdiff)
+        self._pos = [newx,y,newz]
+        self._tilepos = [int(round(newx)), y, int(round(newz))]
+        
+    def correctNearZero(self, x):
+        xabs = abs(x)
+        xabsfloor = math.floor(xabs)
+        if xabs - xabsfloor < 0.0001:
+            x = xabsfloor if x >=0 else xabsfloor*(-1)
+        return x
+    
+    def getIncrement(self, x, orthsteps):
+        if self.correctNearZero(x) == 0:
+            incr = 0
+        else:
+            incr = x/orthsteps
+        return incr
+    
+    def getSign(self, x):
+        return 1 if x >= 0 else -1
+ 

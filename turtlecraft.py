@@ -52,4 +52,4 @@ class Turtlecraft:
         self.mc.postToChat(message)
     
     def clear(self, size):
-        self.mc.setBlocks(-size, 1, -size, size, 1, size, block.AIR.id)
+        self.mc.setBlocks(-size, -size, -size, size, size, size, block.AIR.id)
