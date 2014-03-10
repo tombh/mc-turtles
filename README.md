@@ -20,8 +20,8 @@ T.chat("Hello World")
 # Move the turtle forward
 T.fd(steps)
 # Rotate the turtle right or left
-T.rt(degrees)
-T.lt(degrees)
+T.rt(angle)
+T.lt(angle)
 
 # Set an area the size of <square_length>^2 to the AIR block
 T.clear(square_length)
