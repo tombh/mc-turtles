@@ -1,6 +1,6 @@
 #Minecraft Turtles
 
-We have been using the Minecraft Raspberry Pi edition in our Code Club and experimented with the API.
+We have been using the Minecraft Raspberry Pi edition in our Code Club and experimented with the Python API.
 
 This is an attempt to recreate LOGO turtle movements in Minecraft, by placing blocks along their paths. Still very basic.
 
