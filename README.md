@@ -23,8 +23,8 @@ T.fd(steps)
 T.rt(angle)
 T.lt(angle)
 
-# Set an area the size of <square_length>^2 to the AIR block
-T.clear(square_length)
+# Set an area the size of <square_length>^3 to the AIR block
+T.clear(cubic_length)
 
 # Set the current block type. Similar to traditional turtle's pencolor()
 # There are hundreds of block types, but for now just added a list of possible blocks:  
