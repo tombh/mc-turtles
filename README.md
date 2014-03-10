@@ -27,7 +27,8 @@ T.lt(angle)
 T.clear(square_length)
 
 # Set the current block type. Similar to traditional turtle's pencolor()
-# There are hundreds of block types, but for now just added a list of possible blocks:  ['GRASS','AIR','DIRT','STONE','TNT','GOLD_ORE','LAVA','MELON'] 
+# There are hundreds of block types, but for now just added a list of possible blocks:  
+#['GRASS','AIR','DIRT','STONE','TNT','GOLD_ORE','LAVA','MELON'] 
 # Default is Grass
 T.setBT(blocktype)
 
