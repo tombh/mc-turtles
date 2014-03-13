@@ -1,3 +1,7 @@
+"""
+
+"""
+
 import sys
 PATH_TO_MCPI = ".."
 sys.path.append(PATH_TO_MCPI)
@@ -5,26 +9,27 @@ import mcpi.minecraft as minecraft
 import mcpi.block as block
 from turtlemc import Turtle
 
-class Turtlecraft:
-    
-    BLOCKTYPES = ['GRASS','AIR','DIRT','STONE','TNT','GOLD_ORE','LAVA','MELON']
 
-    def __init__(self,x=0,y=1,z=0,dir=0,block = 'GRASS'):
-        self.Turtle = Turtle(x,y,z,dir,block)
+class Turtlecraft:
+
+    BLOCKTYPES = ['GRASS', 'AIR', 'DIRT', 'STONE', 'TNT', 'GOLD_ORE', 'LAVA', 'MELON']
+
+    def __init__(self, x=0, y=1, z=0, dir=0, block='GRASS'):
+        self.Turtle = Turtle(x, y, z, dir, block)
         self.mc = minecraft.Minecraft.create()
-    
-    def fd(self,steps):
+
+    def fd(self, steps):
         self.Turtle.forward(steps)
         if self.Turtle._pendown:
-            xpos,y,zpos = self.Turtle.getPos()
+            xpos, y, zpos = self.Turtle.getPos()
             blocktype = self.getBlockString(self.Turtle.getBlockType())
-            for x,z in self.Turtle._coords:
-                self.mc.setBlock(x,y,z,blocktype)
+            for x, z in self.Turtle._coords:
+                self.mc.setBlock(x, y, z, blocktype)
 
-    def lt(self,degrees):
+    def lt(self, degrees):
         self.Turtle.turnBy(degrees*(-1))
 
-    def rt(self,degrees):
+    def rt(self, degrees):
         self.Turtle.turnBy(degrees)
 
     def pu(self):
@@ -46,10 +51,10 @@ class Turtlecraft:
                 'STONE': block.STONE,
                 'DIRT': block.DIRT,
                 'GOLD_ORE': block.GOLD_ORE
-                 }.get(blocktype, block.GRASS)   
-                 
+            }.get(blocktype, block.GRASS)
+
     def chat(self, message):
         self.mc.postToChat(message)
-    
+
     def clear(self, size):
         self.mc.setBlocks(-size, -size, -size, size, size, size, block.AIR.id)
