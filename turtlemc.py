@@ -1,8 +1,6 @@
 """
+All the maths to move the Turtle
 """
-import sys
-PATH_TO_MCPI = ".."
-sys.path.append(PATH_TO_MCPI)
 import math
 
 

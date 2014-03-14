@@ -1,0 +1,3 @@
+SERVER = 'localhost'
+PORT = 25565
+MCPIPY_PATH = '../../mcpipy'

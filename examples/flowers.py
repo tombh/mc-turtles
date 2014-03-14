@@ -1,7 +1,7 @@
 import sys
 sys.path.append("..")
 from turtlecraft import Turtlecraft
-T = Turtlecraft(0, 20, 0, 0, 'MELON')
+T = Turtlecraft()
 import math
 
 #Drawing shapes and flowers as specified in
@@ -52,4 +52,4 @@ def flower(T, radius, n):
         leaf(T, r, angle)
         T.lt(angle+(180-angle))
 
-flower(T, 10, 5)
+flower(T, 30, 5)

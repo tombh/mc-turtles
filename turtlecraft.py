@@ -1,10 +1,18 @@
 """
-
+Main class that provides convenience functions to Turtle
 """
 
+# Place a settings.py to use your on custom values
+try:
+    from settings import *  # @UnusedWildImport # noqa
+except ImportError:
+    SERVER = 'localhost'
+    PORT = 4711
+    MCPIPY_PATH = '../../mcpipy'
+
+
 import sys
-PATH_TO_MCPI = ".."
-sys.path.append(PATH_TO_MCPI)
+sys.path.append(MCPIPY_PATH)
 import mcpi.minecraft as minecraft
 import mcpi.block as block
 from turtlemc import Turtle
@@ -14,9 +22,10 @@ class Turtlecraft:
 
     BLOCKTYPES = ['GRASS', 'AIR', 'DIRT', 'STONE', 'TNT', 'GOLD_ORE', 'LAVA', 'MELON']
 
-    def __init__(self, x=0, y=1, z=0, dir=0, block='GRASS'):
-        self.Turtle = Turtle(x, y, z, dir, block)
-        self.mc = minecraft.Minecraft.create()
+    def __init__(self):
+        self.mc = minecraft.Minecraft.create(SERVER, PORT)
+        p = self.mc.player.getPos()
+        self.Turtle = Turtle(p.x, p.y + 10, p.z, 0, 'GOLD_ORE')
 
     def fd(self, steps):
         self.Turtle.forward(steps)
