@@ -2,19 +2,26 @@
 Main class that provides convenience functions to Turtle
 """
 
-# Place a settings.py to use your on custom values
+# Place a settings.py to use your own custom values
 try:
     from settings import *  # @UnusedWildImport # noqa
 except ImportError:
     SERVER = 'localhost'
     PORT = 4711
-    MCPIPY_PATH = '../../mcpipy'
+    MCPIPY_PATH = 'mcpipy'
 
-
+# Append to the path for importing
+import os
 import sys
-sys.path.append(MCPIPY_PATH)
+current_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append("{}/{}".format(current_path, MCPIPY_PATH))
+
 import mcpi.minecraft as minecraft
 import mcpi.block as block
+import json
+import atexit
+import inspect
+
 from turtlemc import Turtle
 
 
@@ -26,14 +33,23 @@ class Turtlecraft:
         self.mc = minecraft.Minecraft.create(SERVER, PORT)
         p = self.mc.player.getPos()
         self.Turtle = Turtle(p.x, p.y + 10, p.z, 0, 'GOLD_ORE')
+        self.history = []
+        # Make a note of the name of the script that was used to instantiate this object
+        self.entry_script = inspect.stack()[-1][1]
+        # Once all turtling has been completed write all the activity to file
+        atexit.register(self.write_history)
 
     def fd(self, steps):
         self.Turtle.forward(steps)
         if self.Turtle._pendown:
             xpos, y, zpos = self.Turtle.getPos()
-            blocktype = self.getBlockString(self.Turtle.getBlockType())
             for x, z in self.Turtle._coords:
-                self.mc.setBlock(x, y, z, blocktype)
+                self.setBlock(x, y, z)
+
+    def setBlock(self, x, y, z):
+        blocktype = self.getBlockString(self.Turtle.getBlockType())
+        self.mc.setBlock(x, y, z, blocktype)
+        self.history.append([x, y, z, blocktype.id])
 
     def lt(self, degrees):
         self.Turtle.turnBy(degrees*(-1))
@@ -67,3 +83,8 @@ class Turtlecraft:
 
     def clear(self, size):
         self.mc.setBlocks(-size, -size, -size, size, size, size, block.AIR.id)
+
+    def write_history(self):
+        path = "{}/history/{}.json".format(current_path, self.entry_script)
+        with open(path, 'w') as outfile:
+            json.dump(self.history, outfile)
