@@ -1,0 +1,3 @@
+[submodule "mcpipy"]
+	path = mcpipy
+	url = git@github.com:brooksc/mcpipy.git

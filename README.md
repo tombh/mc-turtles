@@ -1,10 +1,21 @@
 #Minecraft Turtles
 
-We have been using the Minecraft Raspberry Pi edition in our Code Club and experimented with the Python API.
+We've been using the Raspberry Pi edition of Minecraft in our [Code Club](https://www.codeclub.org.uk/) and trying out the the [MCPiPy API](http://mcpipy.com).
 
-This is an attempt to recreate LOGO turtle movements in Minecraft, by placing blocks along their paths. Still very basic.
+This is an attempt to recreate [LOGO Turtle](http://en.wikipedia.org/wiki/Logo_(programming_language)#Turtle_and_graphics) movements in Minecraft, by placing blocks along their paths. Still very basic.
 
-(Not to be mixed up with the Turtles of the Computercraft Mod: [http://computercraft.info/wiki/Turtle](http://computercraft.info/wiki/Turtle) )
+(Not to be mixed up with the Turtles of the Computercraft Mod: [http://computercraft.info/wiki/Turtle](http://computercraft.info/wiki/Turtle))
+
+MCPiPy, and therefore Minecraft Turtles, can also be used with the standard PC version of Minecraft. You will need a [CraftBukkit](https://dl.bukkit.org/downloads/craftbukkit/) server running the [Raspberry Juice plugin](http://dev.bukkit.org/bukkit-plugins/raspberryjuice/). There is a [good blog post](http://mcpipy.wordpress.com/2013/02/13/running-python-programs-without-a-raspberry-pi/) on the MCPiPy website describing the steps to do this.
+
+##Installation
+```
+git clone --recursive git@github.com:tombh/mc-turtles.git
+```
+
+If your Minecraft server is a different machine from where you are using this code then you can set custom values for the server's address and port in `settings.py`. You can copy `settings.py.sample` as a starting point.
+
+To draw a flower in your Minecraft world simply issue: `python flowers.py`
 
 ##Examples
 
