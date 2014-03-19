@@ -1,49 +1,57 @@
 """
 All the maths to move the Turtle
 """
-import math
 
+import math
+from settings import MCPIPY_PATH
+import sys
+sys.path.append(MCPIPY_PATH)
+from mcpi.vec3 import Vec3
 
 class Turtle:
 
-    def __init__(self, x=0, y=1, z=0, dir=0, block='GRASS'):
-        self._tilepos = [int(math.floor(x)), int(math.floor(y)), int(math.floor(z))]
-        self._pos = [x, y, z]
+    def __init__(self, x=0, y=1, z=0, block='GRASS', dir=[0,0],):
+        self._tilepos = Vec3(int(round(x)), int(round(y)), int(round(z)))
+        self._pos = Vec3(x, y, z)
         self._dir = dir
         self._blocktype = block
         self._pendown = True
 
     def setTilePos(self, x, y, z):
-        self._tilepos = [int(round(x)), int(round(y)), int(round(z))]
+        self._tilepos = Vec3(int(round(x)), int(round(y)), int(round(z)))
 
     def getTilePos(self):
         return self._tilepos
 
     def setPos(self, x, y, z):
-        x = self.correctNearZero(x)
-        z = self.correctNearZero(z)
-        self._pos = [x, y, z]
+        self.x = self.correctNearZero(x)
+        self.y = self.correctNearZero(y)
+        self.z = self.correctNearZero(z)
+        self._pos = Vec3(self.x, self.y, self.z)
 
     def getPos(self):
         return self._pos
 
-    #set Direction of Turtles in degrees
+    # set or get direction of Turtle (as a list consisting of 
+    # horiz. and vert. component in degrees)
     def setDir(self, dir):
         self._dir = dir
-
-    def turnBy(self, degree):
-        dircurr = self.getDir()
-        dirnew = dircurr + degree
+        
+    def getDir(self):
+        return self._dir
+        
+    # rotates Turtle in horizontal or vertical direction
+    def turnBy(self, angle, direction='horizontal'):
+        dir_index = 0 if direction == 'horizontal' else 1
+        dircurr = self.getDir()[dir_index]
+        dirnew = dircurr + angle
         if dirnew >= 360:
             dirnew = dirnew - 360
         if dirnew < 0:
             dirnew = dirnew + 360
-        self.setDir(dirnew)
+        self._dir[dir_index] = dirnew
 
-    def getDir(self):
-        return self._dir
-
-    #todo: give option of either id or name
+    # todo: give option of either id or name
     def setBlockType(self, block):
         self._blocktype = block
 
@@ -55,37 +63,46 @@ class Turtle:
 
     def forward(self, steps):
         startpos = self.getPos()
-        x, y, z = startpos
+        self.x, self.y, self.z = startpos
         dir = self.getDir()
-
-        angle_rad = math.radians(dir)
-        xdiff = self.correctNearZero(math.cos(angle_rad))*steps
-        zdiff = self.correctNearZero(math.sin(angle_rad))*steps
-
+        print self._dir
+        
+        angle_hori = math.radians(dir[0])
+        angle_vert = math.radians(dir[1])
+        xdiff = self.correctNearZero(math.cos(angle_hori))*self.correctNearZero(math.cos(angle_vert))*steps
+        ydiff = self.correctNearZero(math.sin(angle_vert))*steps
+        zdiff = self.correctNearZero(math.sin(angle_hori))*self.correctNearZero(math.cos(angle_vert))*steps
+        
+        print 'xdiff: '+str(xdiff)
+        print 'ydiff: '+str(ydiff)
+        print 'zdiff: '+str(zdiff)
+        
         if self._pendown:
+            diff = [xdiff, ydiff, zdiff]
+            abs_diff = [abs(x) for x in diff]
+            maxdiff = max(abs_diff)
+            count = int(round(maxdiff))
+            # get index of the maximum value, picks the first occurence
+            max_idx = abs_diff.index(maxdiff)
+            
             coords = []
-
-            xsteps = math.fabs(xdiff)
-            zsteps = math.fabs(zdiff)
-            if xsteps >= zsteps:
-                count = int(round(xsteps))
-                sign = self.getSign(xdiff)
-                zincr = self.getIncrement(zdiff, count)
-                for i in range(count):
-                    coords.append((int(x+i*sign), int(round(z+zincr*i))))
-            else:
-                count = int(round(zsteps))
-                sign = self.getSign(zdiff)
-                xincr = self.getIncrement(xdiff, count)
-                for i in range(count):
-                    coords.append((int(round(x+xincr*i)), int(z+i*sign)))
-
+            
+            coord_incr = self.getCoord_incr(max_idx,diff,count)  
+            xincr, yincr, zincr = coord_incr   
+            for i in range(count):
+                '''print x
+                print i*xincr
+                print round(x+i*xincr)
+                print int(round(x+i*xincr))'''
+                coords.append((int(round(self.x+i*xincr)), int(round(self.y+i*yincr)), int(round(self.z+i*zincr))))
+                         
+            print coords
+         
             self._coords = coords
 
-        newx = self.correctNearZero(x + xdiff)
-        newz = self.correctNearZero(z + zdiff)
-        self._pos = [newx, y, newz]
-        self._tilepos = [int(round(newx)), y, int(round(newz))]
+        self._pos += Vec3(xdiff, ydiff, zdiff)
+        self.x, self.y, self.z = self._pos
+        self._tilepos = Vec3(int(round(self.x)), int(round(self.y)), int(round(self.z)))
 
     def correctNearZero(self, x):
         xabs = abs(x)
@@ -93,13 +110,27 @@ class Turtle:
         if xabs - xabsfloor < 0.0001:
             x = xabsfloor if x >= 0 else xabsfloor*(-1)
         return x
-
-    def getIncrement(self, x, orthsteps):
-        if self.correctNearZero(x) == 0:
+        
+    def getIncrement(self, diff, orthsteps):
+        if self.correctNearZero(diff) == 0:
             incr = 0
         else:
-            incr = x/orthsteps
+            incr = diff/orthsteps
         return incr
 
     def getSign(self, x):
         return 1 if x >= 0 else -1
+        
+   
+                     
+       
+      
+    
+    def getCoord_incr(self,max_idx,diff,count):
+        coord_incr = []
+        for i in [0,1,2]:
+            if i == max_idx:
+                coord_incr.append(self.getSign(diff[i]))
+            else:
+                coord_incr.append(self.getIncrement(diff[i], count)) 
+        return coord_incr
