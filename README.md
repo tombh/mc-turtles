@@ -60,6 +60,20 @@ T.Turtle.getBlockType()
 T.Turtle.getDir()
 ```
 
+##Contributing
+
+Feedback and PRs are very welcome.
+
+To run tests you will need some dependencies, so Virtualenv can be useful for that:
+
+```bash
+# In the project root:
+virtuaenv venv
+source venv/bin/activate
+pip install -r dev_requirements.txt
+# To run tests:
+nosetests spec/*
+```
 
 **Some more Block Types**
 ```python

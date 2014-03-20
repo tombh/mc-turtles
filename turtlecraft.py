@@ -13,8 +13,8 @@ except ImportError:
 # Append to the path for importing
 import os
 import sys
-current_path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append("{}/{}".format(current_path, MCPIPY_PATH))
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+sys.path.append("{}/{}".format(PROJECT_ROOT, MCPIPY_PATH))
 
 import mcpi.minecraft as minecraft
 import mcpi.block as block
@@ -35,7 +35,7 @@ class Turtlecraft:
         self.Turtle = Turtle(p.x, p.y + 10, p.z, 0, 'GOLD_ORE')
         self.history = []
         # Make a note of the name of the script that was used to instantiate this object
-        self.entry_script = inspect.stack()[-1][1]
+        self.entry_script = os.path.basename(inspect.stack()[-1][1])
         # Once all turtling has been completed write all the activity to file
         atexit.register(self.write_history)
 
@@ -84,7 +84,9 @@ class Turtlecraft:
     def clear(self, size):
         self.mc.setBlocks(-size, -size, -size, size, size, size, block.AIR.id)
 
+    def history_file_path(self):
+        return "{}/history/{}.json".format(PROJECT_ROOT, self.entry_script)
+
     def write_history(self):
-        path = "{}/history/{}.json".format(current_path, self.entry_script)
-        with open(path, 'w') as outfile:
+        with open(self.history_file_path(), 'w') as outfile:
             json.dump(self.history, outfile)
