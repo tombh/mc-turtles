@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/tombh/mc-turtles.svg?branch=history)](https://travis-ci.org/tombh/mc-turtles)
+
 #Minecraft Turtles
 
 We've been using the Raspberry Pi edition of Minecraft in our [Code Club](https://www.codeclub.org.uk/) and trying out the the [MCPiPy API](http://mcpipy.com).
