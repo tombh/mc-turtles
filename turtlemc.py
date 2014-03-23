@@ -3,53 +3,58 @@ All the maths to move the Turtle
 """
 
 import math
-from settings import MCPIPY_PATH
 import sys
-sys.path.append(MCPIPY_PATH)
-from mcpi.vec3 import Vec3
+sys.path.append("./quat/cgkit/light/")
+from cgtypes import *
 
 class Turtle:
 
-    def __init__(self, x=0, y=1, z=0, block='GRASS', dir=[0,0],):
-        self._tilepos = Vec3(int(round(x)), int(round(y)), int(round(z)))
-        self._pos = Vec3(x, y, z)
-        self._dir = dir
+    def __init__(self, block='GRASS', qdir=[0,1,0,0], qrot=[0,0,-1,0]):
+        self.w, self.x, self.y, self.z = qdir
+        self.wr, self.xr, self.yr, self.zr = qrot
+        self._pos = vec3(self.x, self.y, self.z)
+        self._tilepos = vec3(int(round(self.x)), int(round(self.y)), int(round(self.z)))
+        # unit quaternion to describe direction
+        self._qdir = quat(self.w, self.x, self.y, self.z)
+        # another unit quaternion to describe left-right rotation axis
+        self._qrot = quat(self.wr, self.xr, self.yr, self.zr)
         self._blocktype = block
         self._pendown = True
-
-    def setTilePos(self, x, y, z):
-        self._tilepos = Vec3(int(round(x)), int(round(y)), int(round(z)))
-
-    def getTilePos(self):
-        return self._tilepos
-
+    
+    # default for describing position is now quaternion, although w is always 0 and we could write it as a vector, too - might change it again
     def setPos(self, x, y, z):
         self.x = self.correctNearZero(x)
         self.y = self.correctNearZero(y)
         self.z = self.correctNearZero(z)
-        self._pos = Vec3(self.x, self.y, self.z)
-
+        self._pos = vec3(self.x, self.y, self.z)
+        
     def getPos(self):
         return self._pos
 
-    # set or get direction of Turtle (as a list consisting of 
-    # horiz. and vert. component in degrees)
-    def setDir(self, dir):
-        self._dir = dir
+    def getTilePos(self):
+        self._tilepos = vec3(int(round(self.x)), int(round(self.y)), int(round(self.z)))
+        return self._tilepos
+
+    # set or get direction of Turtle (as a quaternion)
+    def setDir(self, quat):
+        self._dir = quat
         
     def getDir(self):
-        return self._dir
+        return self._qdir
         
-    # rotates Turtle in horizontal or vertical direction
-    def turnBy(self, angle, direction='horizontal'):
-        dir_index = 0 if direction == 'horizontal' else 1
-        dircurr = self.getDir()[dir_index]
-        dirnew = dircurr + angle
-        if dirnew >= 360:
-            dirnew = dirnew - 360
-        if dirnew < 0:
-            dirnew = dirnew + 360
-        self._dir[dir_index] = dirnew
+    # adding quaternions! rotates turtle left right, or tilts forward/backwards
+    def turnBy(self, angle, direction='lr'):
+        if direction == 'lr':
+            rot_axisq = self._qrot
+        else:
+            rot_axisq = self._qdir*self._qrot 
+        
+        q_angle_axis = rot_axisq.toAngleAxis()
+        axis_vec = q_angle_axis[1]
+        
+        self._qdir = quat.fromAngleAxis(self._qdir,math.radians(angle),axis_vec)
+        
+
 
     # todo: give option of either id or name
     def setBlockType(self, block):
@@ -62,16 +67,9 @@ class Turtle:
         self._pendown = True
 
     def forward(self, steps):
-        startpos = self.getPos()
-        self.x, self.y, self.z = startpos
-        dir = self.getDir()
-        print self._dir
         
-        angle_hori = math.radians(dir[0])
-        angle_vert = math.radians(dir[1])
-        xdiff = self.correctNearZero(math.cos(angle_hori))*self.correctNearZero(math.cos(angle_vert))*steps
-        ydiff = self.correctNearZero(math.sin(angle_vert))*steps
-        zdiff = self.correctNearZero(math.sin(angle_hori))*self.correctNearZero(math.cos(angle_vert))*steps
+        # something missing here, should be easy, just no time anymore! 
+        # multiply get x,y and z diffd from the new direction quat
         
         print 'xdiff: '+str(xdiff)
         print 'ydiff: '+str(ydiff)
@@ -100,9 +98,9 @@ class Turtle:
          
             self._coords = coords
 
-        self._pos += Vec3(xdiff, ydiff, zdiff)
+        self._pos += vec3(xdiff, ydiff, zdiff)
         self.x, self.y, self.z = self._pos
-        self._tilepos = Vec3(int(round(self.x)), int(round(self.y)), int(round(self.z)))
+        self._tilepos = vec3(int(round(self.x)), int(round(self.y)), int(round(self.z)))
 
     def correctNearZero(self, x):
         xabs = abs(x)
@@ -120,11 +118,6 @@ class Turtle:
 
     def getSign(self, x):
         return 1 if x >= 0 else -1
-        
-   
-                     
-       
-      
     
     def getCoord_incr(self,max_idx,diff,count):
         coord_incr = []
