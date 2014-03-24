@@ -22,19 +22,18 @@ class Turtlecraft:
 
     BLOCKTYPES = ['GRASS', 'AIR', 'DIRT', 'STONE', 'TNT', 'GOLD_ORE', 'LAVA', 'MELON']
 
-    def __init__(self, block = 'GRASS', near_player = True, x=0, y=1, z=0, dir=[0,0]):
+    def __init__(self, block = 'GRASS', near_player = True, pos=[0,1,0], dir = [1,0,0], rot = [0,-1,0]):
         self.mc = minecraft.Minecraft.create(SERVER, PORT)        
         if near_player:
             p = self.mc.player.getPos()
             self.x, self.y, self.z = p.x+3, p.y -1, p.z+3  
         else:
-            self.x, self.y, self.z = x,y,z
-        self.Turtle = Turtle(self.x,self.y,self.z,block)      
+            self.x, self.y, self.z = pos
+        self.Turtle = Turtle(block, pos=[self.x, self.y, self.z])      
 
     def fd(self, steps):
         self.Turtle.forward(steps)
         if self.Turtle._pendown:
-            xpos, ypos, zpos = self.Turtle.getPos()
             blocktype = self.getBlockString(self.Turtle.getBlockType())
             for x, y, z in self.Turtle._coords:
                 self.mc.setBlock(x, y, z, blocktype)
@@ -45,11 +44,11 @@ class Turtlecraft:
     def rt(self, angle):
         self.Turtle.turnBy(angle)
         
-    def lean_bk(self, angle):
-        self.Turtle.turnBy(angle, 'vertical')   
+    def tilt_bk(self, angle):
+        self.Turtle.turnBy(angle, 'tilt')   
         
-    def lean_fd(self, angle):
-        self.Turtle.turnBy(angle*(-1),'vertical')      
+    def tilt_fd(self, angle):
+        self.Turtle.turnBy(angle*(-1),'tilt')      
 
     def pu(self):
         self.Turtle._pendown = False

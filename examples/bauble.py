@@ -14,6 +14,6 @@ for i in range(30):
     
 def circle():
     for i in range(60):
-        T.lean_fd(6)
+        T.tilt_fd(6)
         T.fd(2)
 
