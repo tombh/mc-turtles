@@ -1,3 +1,6 @@
 [submodule "mcpipy"]
-	path = mcpipy
-	url = git@github.com:brooksc/mcpipy.git
+	path = lib/deps/mcpipy
+	url = https://github.com/brooksc/mcpipy.git
+[submodule "cgkit"]
+	path = lib/deps/cgkit
+	url = https://github.com/yamins81/cgkit.git

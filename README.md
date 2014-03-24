@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/tombh/mc-turtles.svg?branch=history)](https://travis-ci.org/tombh/mc-turtles)
+
 #Minecraft Turtles
 
 We've been using the Raspberry Pi edition of Minecraft in our [Code Club](https://www.codeclub.org.uk/) and trying out the the [MCPiPy API](http://mcpipy.com).
@@ -60,6 +62,20 @@ T.Turtle.getBlockType()
 T.Turtle.getDir()
 ```
 
+##Contributing
+
+Feedback and PRs are very welcome.
+
+To run tests you will need some dependencies, so Virtualenv can be useful for that:
+
+```bash
+# In the project root:
+virtuaenv venv
+source venv/bin/activate
+pip install -r requirements.txt
+# To run tests:
+nosetests spec/*
+```
 
 **Some more Block Types**
 ```python

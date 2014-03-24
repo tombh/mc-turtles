@@ -1,3 +1,5 @@
 *.pyc
 katja.py
 settings.py
+history/*.json
+venv/

@@ -1,0 +1,2 @@
+SERVER = 'example'
+PORT = 4711
