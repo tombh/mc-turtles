@@ -1,5 +1,5 @@
 import sys
-sys.path.append("..")
+sys.path.append("../lib")
 from turtlecraft import Turtlecraft
 T = Turtlecraft()
 import math

@@ -1,11 +1,8 @@
 import sys
-sys.path.append("..")
+sys.path.append("../lib")
 from turtlecraft import Turtlecraft
 
-T = Turtlecraft('MELON')
-
-T.rt(30)
-T.tilt_bk(30)
+T = Turtlecraft()
 
 for i in range(4):
     T.fd(10)

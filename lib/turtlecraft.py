@@ -2,21 +2,22 @@
 Main class that provides convenience functions to Turtle
 """
 
-# Place a settings.py in the project root to use your own custom values
-try:
-    from settings import *  # @UnusedWildImport # noqa
-except ImportError:
-    SERVER = 'localhost'
-    PORT = 4711
-
 # Append to the path for importing
 import os
 import sys
 sys.dont_write_bytecode = True  # Don't create annoying .pyc files
 basepath = os.path.dirname(__file__)
 PROJECT_ROOT = os.path.dirname(os.path.join(basepath, "..", ".."))
+sys.path.append(PROJECT_ROOT)
 sys.path.append("{}/lib/deps/mcpipy".format(PROJECT_ROOT))
 sys.path.append("{}/lib/deps/cgkit/cgkit/light/".format(PROJECT_ROOT))
+
+# Place a settings.py in the project root to use your own custom values
+try:
+    from settings import *  # @UnusedWildImport # noqa
+except ImportError:
+    SERVER = 'localhost'
+    PORT = 4711
 
 import mcpi.minecraft as minecraft
 import mcpi.block as block
