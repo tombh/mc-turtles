@@ -22,25 +22,25 @@ describe TestCase, 'Turtle':
             os.remove(self.T.history_file_path())
 
     it 'should move forward':
-        self.T.fd(2)
-        self.assertEqual(self.T.history[-1], [1, 0, 0, 2])
+        self.T.fd(1)
+        self.assertEqual(self.T.history, [[1, 0, 0, 2]])
 
     it 'should turn right':
         self.T.rt(90)
-        self.T.fd(2)
-        self.assertEqual(self.T.history[-1], [0, 0, 1, 2])
+        self.T.fd(1)
+        self.assertEqual(self.T.history, [[0, 0, 1, 2]])
 
     it 'should turn left':
         self.T.lt(90)
-        self.T.fd(2)
-        self.assertEqual(self.T.history[-1], [0, 0, -1, 2])
+        self.T.fd(1)
+        self.assertEqual(self.T.history, [[0, 0, -1, 2]])
 
     it 'should tilt forward':
         self.T.tilt_fd(90)
-        self.T.fd(2)
-        self.assertEqual(self.T.history[-1], [0, -1, 0, 2])
+        self.T.fd(1)
+        self.assertEqual(self.T.history, [[0, -1, 0, 2]])
 
     it 'should tilt back':
         self.T.tilt_bk(90)
-        self.T.fd(2)
-        self.assertEqual(self.T.history[-1], [0, 1, 0, 2])
+        self.T.fd(1)
+        self.assertEqual(self.T.history, [[0, 1, 0, 2]])

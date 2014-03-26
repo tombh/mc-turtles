@@ -43,39 +43,35 @@ class Turtle:
 
     def turnBy(self, angle, direction='lr'):
         """
-        This is at the heart of the whole class, and of the whole Turtle 3d logic. The only
-        place where we need quaternions, but here they are really really useful
+        Crucial function for turtle movement - turtle rotating around axis that depends on both
+        type of movement and turtle's direction and rotation - using vector multiplication and
+        in one place quaternions.
         """
         if direction == 'lr':
-            # no need for quat yet, set vec component to rotation axis
+            # Left-right movement is around the rotation axis.
             rot_axis_vec = self._rot
+        elif direction == 'tilt':
+            # Tilting up or down occurs around the axis perpendicular to the direction vector
+            # and the rotation axis (ie. the cross product of the two vectors).
+            rot_axis_vec = self._rot.cross(self._dir)
+            # Recalculate the rotation axis vector. This is the cross product of the newly
+            # calulated direction vector and the rotation vector we just used.
+            self._rot = self._dir.cross(rot_axis_vec)
         else:
-            # generate rotation and dir quaternions, calculate rot axis
-            xr, yr, zr = self._rot
-            q_rotation = quat(0, xr, yr, zr)
-            xd, yd, zd = self._dir
-            q_dir = quat(0, xd, yd, zd)
-            q_rotation *= q_dir
-            # we will need the vector component of that quat
-            rot_angle, rot_axis_vec = q_rotation.toAngleAxis()
+            raise RuntimeError("Unsuppoorted turning direction")
 
-        # create a new quat for the rotation from angle and vector
+        # Using the angle and the rotation axis unit vector, we create a quaternion for the
+        # rotation.
+        # See http://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation for more info.
         angle_rad = math.radians(angle)
         q_rotate = quat(angle_rad, rot_axis_vec)
 
-        self._dir = q_rotate.rotateVec(self._dir)
-        self._dir = self.setDir(*self._dir)
+        # Use the quaternion to rotate the direction vector around the rotation axis by the given
+        # angle.
+        new_dir_vec = q_rotate.rotateVec(self._dir)
+        self._dir = self.setDir(*new_dir_vec)
 
-        # in case of tilting, we need to recalculate the rotation axis vector
-        # claculation via quats
-        if direction != 'lr':
-            xd, yd, zd = self._dir
-            qdir = quat(0, xd, yd, zd)
-            qrot = qdir*q_rotation
-            r_angle, r_axis_vec = qrot.toAngleAxis()
-            self._rot = r_axis_vec
-
-    # todo: give option of either id or name
+    # TODO: give option of either id or name
     def setBlockType(self, block):
         self._blocktype = block
 
@@ -86,27 +82,22 @@ class Turtle:
         self._pendown = True
 
     def forward(self, steps):
-        xdiff, ydiff, zdiff = [coord*steps for coord in self._dir]
-        diff = [xdiff, ydiff, zdiff]
-        abs_diff = [abs(x) for x in diff]
-        maxdiff = max(abs_diff)
-        count = int(round(maxdiff))
-        # get index of the maximum value, picks the first occurence
-        max_idx = abs_diff.index(maxdiff)
+        """
+        Generate a list of integer coordinates that represent a forward movement along
+        the current direction.
+        """
+        # coords is a list of all the steps that the turtle needs to take
         coords = []
-        coord_incr = self.getCoord_incr(max_idx, diff, count)
-        xincr, yincr, zincr = coord_incr
-        for i in range(count):
-            coords.append((
-                int(round(self.x+i*xincr)),
-                int(round(self.y+i*yincr)),
-                int(round(self.z+i*zincr))
-            ))
+        # Split the number of steps into increasingly larger distances, starting with 1 and ending
+        # with the final destination
+        for i in range(steps):
+            # Multiply the current step distance by the direction unit vector
+            # and round down to an integer.
+            coords.append([int(round(coord + i*coord)) for coord in self._dir])
         self._coords = coords
-
-        self._pos += vec3(xdiff, ydiff, zdiff)
+        self._pos += vec3(*[steps*coord for coord in self._dir])
         self.x, self.y, self.z = self._pos
-        self._tilepos = vec3(int(round(self.x)), int(round(self.y)), int(round(self.z)))
+        self._tilepos = self.getTilePos()
 
     def correctNearZero(self, x):
         xabs = abs(x)
@@ -114,22 +105,3 @@ class Turtle:
         if xabs - xabsfloor < 0.0001:
             x = xabsfloor if x >= 0 else xabsfloor*(-1)
         return x
-
-    def getIncrement(self, diff, orthsteps):
-        if self.correctNearZero(diff) == 0:
-            incr = 0
-        else:
-            incr = diff/orthsteps
-        return incr
-
-    def getSign(self, x):
-        return 1 if x >= 0 else -1
-
-    def getCoord_incr(self, max_idx, diff, count):
-        coord_incr = []
-        for i in [0, 1, 2]:
-            if i == max_idx:
-                coord_incr.append(self.getSign(diff[i]))
-            else:
-                coord_incr.append(self.getIncrement(diff[i], count))
-        return coord_incr
