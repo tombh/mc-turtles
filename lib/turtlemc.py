@@ -54,9 +54,6 @@ class Turtle:
             # Tilting up or down occurs around the axis perpendicular to the direction vector
             # and the rotation axis (ie. the cross product of the two vectors).
             rot_axis_vec = self._rot.cross(self._dir)
-            # Recalculate the rotation axis vector. This is the cross product of the newly
-            # calulated direction vector and the rotation vector we just used.
-            self._rot = self._dir.cross(rot_axis_vec)
         else:
             raise RuntimeError("Unsuppoorted turning direction")
 
@@ -70,6 +67,11 @@ class Turtle:
         # angle.
         new_dir_vec = q_rotate.rotateVec(self._dir)
         self._dir = self.setDir(*new_dir_vec)
+
+        if direction == 'tilt':
+            # Recalculate the rotation axis vector. This is the cross product of the newly
+            # calulated direction vector and the rotation vector we just used.
+            self._rot = self._dir.cross(rot_axis_vec)
 
     # TODO: give option of either id or name
     def setBlockType(self, block):
@@ -91,9 +93,14 @@ class Turtle:
         # Split the number of steps into increasingly larger distances, starting with 1 and ending
         # with the final destination
         for i in range(steps):
+            i += 1
             # Multiply the current step distance by the direction unit vector
             # and round down to an integer.
-            coords.append([int(round(coord + i*coord)) for coord in self._dir])
+            coords.append((
+                int(round(self.x + i*self._dir[0])),
+                int(round(self.y + i*self._dir[1])),
+                int(round(self.z + i*self._dir[2]))
+            ))
         self._coords = coords
         self._pos += vec3(*[steps*coord for coord in self._dir])
         self.x, self.y, self.z = self._pos

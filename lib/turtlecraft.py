@@ -53,6 +53,7 @@ class Turtlecraft:
         self.Turtle.forward(steps)
         if self.Turtle._pendown:
             for x, y, z in self.Turtle._coords:
+                print(x, y, z)
                 self.setBlock(x, y, z)
 
     def setBlock(self, x, y, z):
