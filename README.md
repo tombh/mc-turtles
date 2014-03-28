@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/tombh/mc-turtles.svg?branch=history)](https://travis-ci.org/tombh/mc-turtles)
 
-#Minecraft Turtles
+#Minecraft Turtles 3D
 
 We've been using the Raspberry Pi edition of Minecraft in our [Code Club](https://www.codeclub.org.uk/) and trying out the the [MCPiPy API](http://mcpipy.com).
 
@@ -35,6 +35,9 @@ T.fd(steps)
 # Rotate the turtle right or left
 T.rt(angle)
 T.lt(angle)
+# Tilt the turtle forwards and backwards
+T.tilt_fd(angle)
+T.tilt_bk(angle)
 
 # Set an area the size of <square_length>^3 to the AIR block
 T.clear(cubic_length)
