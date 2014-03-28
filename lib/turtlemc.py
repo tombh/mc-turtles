@@ -71,6 +71,7 @@ class Turtle:
         if direction == 'tilt':
             # Recalculate the rotation axis vector. This is the cross product of the newly
             # calulated direction vector and the rotation vector we just used.
+            # TODO: move into direction=='tilt' block above, but watch out for pass by ref issue
             self._rot = self._dir.cross(rot_axis_vec)
 
     # TODO: give option of either id or name
