@@ -2,6 +2,8 @@
 
 #Minecraft Turtles 3D
 
+![Screenshot](http://i.imgur.com/8MWMiiQ.jpg)
+
 We've been using the Raspberry Pi edition of Minecraft in our [Code Club](https://www.codeclub.org.uk/) and trying out the the [MCPiPy API](http://mcpipy.com).
 
 This is an attempt to recreate [LOGO Turtle](http://en.wikipedia.org/wiki/Logo_(programming_language)#Turtle_and_graphics) movements in Minecraft, by placing blocks along their paths. Still very basic.

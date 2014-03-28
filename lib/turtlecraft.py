@@ -50,10 +50,16 @@ class Turtlecraft:
         atexit.register(self.write_history)
 
     def fd(self, steps):
+        steps = int(steps)
         self.Turtle.forward(steps)
         if self.Turtle._pendown:
             for x, y, z in self.Turtle._coords:
                 self.setBlock(x, y, z)
+
+    def bk(self, steps):
+        self.rt(180)
+        self.fd(steps)
+        self.rt(180)
 
     def setBlock(self, x, y, z):
         blocktype = self.getBlockString(self.Turtle.getBlockType())
