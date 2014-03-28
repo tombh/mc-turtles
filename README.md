@@ -72,7 +72,7 @@ To run tests you will need some dependencies, so Virtualenv can be useful for th
 # In the project root:
 virtuaenv venv
 source venv/bin/activate
-pip install -r dev_requirements.txt
+pip install -r requirements.txt
 # To run tests:
 nosetests spec/*
 ```

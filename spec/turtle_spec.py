@@ -21,16 +21,51 @@ describe TestCase, 'Turtle':
         if os.path.isfile(self.T.history_file_path()):
             os.remove(self.T.history_file_path())
 
-    it 'should move forward':
-        self.T.fd(2)
-        self.assertEqual(self.T.history[-1], [1, 0, 0, 14])
+    describe 'Basic turtle movements':
+        it 'should move forward':
+            self.T.fd(1)
+            self.assertEqual(self.T.history, [[1, 0, 0, 2]])
 
-    it 'should turn right':
-        self.T.rt(90)
-        self.T.fd(2)
-        self.assertEqual(self.T.history[-1], [0, 0, 1, 14])
+        it 'should turn right':
+            self.T.rt(90)
+            self.T.fd(1)
+            self.assertEqual(self.T.history, [[0, 0, 1, 2]])
 
-    it 'should turn left':
-        self.T.lt(90)
-        self.T.fd(2)
-        self.assertEqual(self.T.history[-1], [0, 0, -1, 14])
+        it 'should turn left':
+            self.T.lt(90)
+            self.T.fd(1)
+            self.assertEqual(self.T.history, [[0, 0, -1, 2]])
+
+        it 'should tilt forward':
+            self.T.tilt_fd(90)
+            self.T.fd(1)
+            self.assertEqual(self.T.history, [[0, -1, 0, 2]])
+
+        it 'should tilt back':
+            self.T.tilt_bk(90)
+            self.T.fd(1)
+            self.assertEqual(self.T.history, [[0, 1, 0, 2]])
+
+    describe 'Movements depending on multiple turns':
+        it 'should create a 2x2 cube':
+            for i in range(4):
+                self.T.rt(90)
+                self.T.fd(1)
+            self.T.tilt_bk(90)
+            self.T.pu()
+            self.T.fd(1)
+            self.T.pd()
+            self.T.tilt_fd(90)
+            for i in range(4):
+                self.T.rt(90)
+                self.T.fd(1)
+            self.assertEqual(self.T.history, [
+                [0, 0, 1, 2],
+                [-1, 0, 1, 2],
+                [-1, 0, 0, 2],
+                [0, 0, 0, 2],
+                [0, 1, 1, 2],
+                [-1, 1, 1, 2],
+                [-1, 1, 0, 2],
+                [0, 1, 0, 2]
+            ])
